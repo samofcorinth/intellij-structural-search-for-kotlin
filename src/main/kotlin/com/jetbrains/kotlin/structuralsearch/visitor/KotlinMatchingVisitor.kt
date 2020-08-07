@@ -955,10 +955,10 @@ class KotlinMatchingVisitor(private val myMatchingVisitor: GlobalMatchingVisitor
 
     override fun visitProperty(property: KtProperty) {
         val other = getTreeElementDepar<KtProperty>() ?: return
+
         myMatchingVisitor.result = matchTypeReferenceWithDeclaration(property.typeReference, other)
                 && myMatchingVisitor.match(property.modifierList, other.modifierList)
                 && matchTextOrVariable(property.nameIdentifier, other.nameIdentifier)
-                && property.isVar == other.isVar
                 && myMatchingVisitor.match(property.docComment, other.docComment)
                 && (property.delegateExpressionOrInitializer == null || myMatchingVisitor.matchOptionally(
             property.delegateExpressionOrInitializer, other.delegateExpressionOrInitializer
@@ -967,6 +967,7 @@ class KotlinMatchingVisitor(private val myMatchingVisitor: GlobalMatchingVisitor
                 && myMatchingVisitor.match(property.setter, other.setter)
                 && myMatchingVisitor.match(property.receiverTypeReference, other.receiverTypeReference)
         val handler = getHandler(property.nameIdentifier!!)
+
         if (myMatchingVisitor.result && handler is SubstitutionHandler) {
             handler.handle(other.nameIdentifier, myMatchingVisitor.matchContext)
         }
