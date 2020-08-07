@@ -21,6 +21,7 @@ import com.intellij.structuralsearch.plugin.replace.ReplaceOptions
 import com.intellij.structuralsearch.plugin.ui.Configuration
 import com.intellij.structuralsearch.plugin.ui.UIUtil
 import com.intellij.util.SmartList
+import com.jetbrains.kotlin.structuralsearch.filters.VarValFilter
 import com.jetbrains.kotlin.structuralsearch.visitor.KotlinCompilingVisitor
 import com.jetbrains.kotlin.structuralsearch.visitor.KotlinMatchingVisitor
 import com.jetbrains.kotlin.structuralsearch.visitor.KotlinRecursiveElementWalkingVisitor
@@ -180,6 +181,10 @@ class KotlinStructuralSearchProfile : StructuralSearchProfile() {
             UIUtil.MAXIMUM_UNLIMITED -> return when (variableNode) {
                 null -> false
                 else -> isApplicableMaxCount(variableNode) || isApplicableMinMaxCount(variableNode)
+            }
+            VarValFilter.CONSTRAINT_NAME -> return when (variableNode) {
+                null -> false
+                else -> variableNode.parent is KtProperty
             }
         }
         return super.isApplicableConstraint(constraintName, variableNode, completePattern, target)
